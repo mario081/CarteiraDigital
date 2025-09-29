@@ -42,7 +42,7 @@ export class UserService {
             throw new ForbiddenException("email ou senha incorreto")
         }
 
-        const payload = {user: dto.email, password: dto.senha}
+        const payload = {sub: login.id, user: login.email}
         return {acessarToken: this.jwtService.sign(payload)};
     }
 }
