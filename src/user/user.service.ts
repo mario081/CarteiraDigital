@@ -30,6 +30,7 @@ export class UserService {
     async logar(dto: loginUserDto){
         const login = await this.prisma.users.findUnique({
             where:{
+                name: dto.name,
                 email: dto.email,
             }
         })
@@ -42,7 +43,7 @@ export class UserService {
             throw new ForbiddenException("email ou senha incorreto")
         }
 
-        const payload = {sub: login.id, user: login.email}
+        const payload = {sub: login.id, email: login.email, name: login.name}
         return {acessarToken: this.jwtService.sign(payload)};
     }
 }

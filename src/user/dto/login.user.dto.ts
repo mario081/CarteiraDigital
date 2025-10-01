@@ -7,5 +7,8 @@ export class loginUserDto {
     email: string
 
     @IsNotEmpty()
+    name: string
+
+    @IsNotEmpty()
     senha: string
 }

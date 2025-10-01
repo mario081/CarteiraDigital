@@ -18,5 +18,12 @@ model Users {
   name String
   email String @unique
   senha String
+  conta Conta?
+}
 
+model Conta {
+  id String @id @default(uuid())
+  saldo Decimal @default(0.00) @db.Decimal(10, 2)
+  users Users @relation(fields: [userId], references: [id])
+  userId String @unique
 }
