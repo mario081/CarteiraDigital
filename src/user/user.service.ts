@@ -12,7 +12,7 @@ export class UserService {
 
     async createUser(dto: createUserDto) {
 
-        const hashedPassword = await argon2.hash(dto.senha)
+        const hashedPassword = await argon2.hash(dto.password)
 
         return this.prisma.$transaction(async (tx) => {
 
@@ -20,7 +20,7 @@ export class UserService {
                 data: {
                     name: dto.name,
                     email: dto.email,
-                    senha: hashedPassword
+                    password: hashedPassword
                 }
             })
 
@@ -45,7 +45,7 @@ export class UserService {
         if (!login) {
             throw new ForbiddenException("Usuario nao encontrado")
         }
-        const isMatch = await argon2.verify(login.senha, dto.senha)
+        const isMatch = await argon2.verify(login.password, dto.password)
         if (!isMatch) {
             throw new ForbiddenException("email ou senha incorreto")
         }

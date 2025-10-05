@@ -10,5 +10,5 @@ export class loginUserDto {
     name: string
 
     @IsNotEmpty()
-    senha: string
+    password: string
 }
