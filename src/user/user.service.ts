@@ -4,11 +4,11 @@ import { createUserDto } from './dto/create.user.dto';
 import * as argon2 from 'argon2';
 import { loginUserDto } from './dto/login.user.dto';
 import { JwtService } from '@nestjs/jwt';
-import { ContaService } from 'src/conta/conta.service';
+import { accountService } from 'src/account/account.service';
 @Injectable()
 export class UserService {
 
-    constructor(private prisma: PrismaService, private readonly jwtService: JwtService, private contaService: ContaService) { }
+    constructor(private prisma: PrismaService, private readonly jwtService: JwtService, private contaService: accountService) { }
 
     async createUser(dto: createUserDto) {
 
@@ -43,7 +43,7 @@ export class UserService {
         })
 
         if (!login) {
-            throw new ForbiddenException("Usuario nao encontrado")
+            throw new ForbiddenException("Usuario não encontrado")
         }
         const isMatch = await argon2.verify(login.password, dto.password)
         if (!isMatch) {

@@ -1,6 +1,6 @@
 import { IsUUID } from "class-validator"
 
-export class createContaDto {
+export class createAccountDto {
 
     @IsUUID()
     userId: string
