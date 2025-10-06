@@ -44,7 +44,44 @@ export class TransactionsService {
                 throw new BadRequestException('Saldo insuficiente para a transferência.')
             }
 
+            await tx.account.update({
+                where: { id: senderAccoount.id },
+                data: {
+                    balance: {
+                        decrement: transferAmount
+                    }
+                }
+            })
+
+            await tx.account.update({
+                where: { id: recipientAccount.id},
+                data: {
+                    balance: {
+                        increment: transferAmount
+                    }
+                }
+            })
+
+            await tx.history.create({
+                data: {
+                    accountId: senderAccoount.id,
+                    type: 'Transferência Enviada',
+                    value: transferAmount,
+                    description: `Transferência de: ${recipientEmail}`
+                }
+            })
+
+            const recipientHistory = await tx.history.create({
+                data:{
+                    accountId: recipientAccount.id,
+                    type: 'Transferência Recebida',
+                    value: transferAmount,
+                    description: `Transferência de: ${senderUserAccoount.email}`
+                }
+            })
             
+            return recipientHistory
+
         })
     }
 
