@@ -9,7 +9,7 @@ CREATE TABLE "public"."Users" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."account" (
+CREATE TABLE "public"."Account" (
     "id" TEXT NOT NULL,
     "balance" DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     "userId" TEXT NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE "public"."account" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."history" (
+CREATE TABLE "public"."History" (
     "id" TEXT NOT NULL,
     "accountId" TEXT NOT NULL,
     "type" TEXT NOT NULL,
