@@ -40,7 +40,7 @@ export class TransactionsService {
                 throw new BadRequestException('Você não pode transferir para sua própria conta')
             }
 
-            if(recipientAccount.balance.toNumber() < transferAmount) {
+            if(senderAccoount.balance.toNumber() < transferAmount) {
                 throw new BadRequestException('Saldo insuficiente para a transferência.')
             }
 

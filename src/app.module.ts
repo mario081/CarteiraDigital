@@ -4,12 +4,13 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { FeatureModule } from './feature/feature.module';
 import { TransactionsModule } from './transactions/transactions.module';
+import { HistoryService } from './history/history.service';
 
 
 
 @Module({
   imports: [UserModule, PrismaModule, ConfigModule.forRoot({ isGlobal: true}), FeatureModule, TransactionsModule],
   controllers: [],
-  providers: [],
+  providers: [HistoryService],
 })
 export class AppModule {}
