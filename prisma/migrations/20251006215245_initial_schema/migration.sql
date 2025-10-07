@@ -9,7 +9,7 @@ CREATE TABLE "public"."Users" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."Account" (
+CREATE TABLE "public"."account" (
     "id" TEXT NOT NULL,
     "balance" DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     "userId" TEXT NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE "public"."History" (
     "description" TEXT,
     "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "history_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "History_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -39,4 +39,4 @@ CREATE UNIQUE INDEX "account_userId_key" ON "public"."account"("userId");
 ALTER TABLE "public"."account" ADD CONSTRAINT "account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."history" ADD CONSTRAINT "history_accountId_fkey" FOREIGN KEY ("accountId") REFERENCES "public"."account"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."History" ADD CONSTRAINT "History_accountId_fkey" FOREIGN KEY ("accountId") REFERENCES "public"."account"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

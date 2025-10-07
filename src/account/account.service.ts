@@ -17,7 +17,7 @@ export class accountService {
                 }
             })
 
-            await tx.history.create({
+            await tx.History.create({
                 data: {
                     accountId: newAccount.id,
                     type: 'Abrir com Link Compartilhado',
@@ -33,7 +33,7 @@ export class accountService {
 
                 }
             })
-            await tx.history.create({
+            await tx.History.create({
                 data: {
                     accountId: account.id,
                     type: 'Abertura da conta',

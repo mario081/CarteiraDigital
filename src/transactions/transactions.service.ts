@@ -1,12 +1,13 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { transferDto } from './dto/transfer.dto';
-import { NotFoundError } from 'rxjs';
+import { Prisma } from '@prisma/client';
+import { HistoryService } from 'src/history/history.service';
 
 @Injectable()
 export class TransactionsService {
 
-    constructor(private prisma: PrismaService) {}
+    constructor(private prisma: PrismaService, private historyService: HistoryService) {}
 
     async transfer(senderUserId: string, dto: transferDto){
         const { recipientEmail, amount } = dto
@@ -62,26 +63,23 @@ export class TransactionsService {
                 }
             })
 
-            await tx.history.create({
-                data: {
-                    accountId: senderAccoount.id,
-                    type: 'Transferência Enviada',
-                    value: transferAmount,
-                    description: `Transferência de: ${recipientEmail}`
-                }
-            })
+            await this.historyService.createRecord(tx,
+                senderAccoount.id,
+                'TRANSFER_SENT',
+                new Prisma.Decimal(transferAmount * -1),
+                `Transferência enviada para: ${recipientUserAccount.email}`,
+                new Date()
+            )
 
-            const recipientHistory = await tx.history.create({
-                data:{
-                    accountId: recipientAccount.id,
-                    type: 'Transferência Recebida',
-                    value: transferAmount,
-                    description: `Transferência de: ${senderUserAccoount.email}`
-                }
-            })
-            
+            const recipientHistory = await this.historyService.createRecord(tx,
+                recipientAccount.id,
+                'TRANSFER_RECEIVED',
+                new Prisma.Decimal(transferAmount),
+                `Transferência recebida de: ${senderUserAccoount.email}`,
+                new Date()
+            )
+
             return recipientHistory
-
         })
     }
 
