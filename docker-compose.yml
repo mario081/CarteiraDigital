@@ -2,11 +2,12 @@ version: '3.8'
 
 services:
   postgres_db:
-    # ... (dados existentes)
     image: postgres:16-alpine
     container_name: meu_postgres_dev
     environment:
-      # ... (suas variáveis)
+      # Variáveis essenciais do PostgreSQL
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
       POSTGRES_DB: Carteira-Digital-db
     ports:
       - "5432:5432"
@@ -14,51 +15,41 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-    # 🚨 NOVO: HEALTHCHECK para garantir que o DB está pronto
+    # HEALTHCHECK: Garante que o banco de dados esteja pronto antes que a API inicie
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U root"] # Testa a conexão usando o usuário 'root'
+      test: ["CMD-SHELL", "pg_isready -U root"]
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 10s # Espera 10s antes de começar a checar 
-  # -------------------------------------------------------------------
-  # NOVO SERVIÇO: SUA APLICAÇÃO NESTJS
-  # -------------------------------------------------------------------
+      start_period: 10s
+
   app:
-    # 1. Diz ao Docker Compose para CONSTRUIR a imagem
-    #    usando o Dockerfile que está no diretório atual.
+    # Constrói a imagem a partir do Dockerfile no diretório atual
     build: 
       context: . 
       dockerfile: Dockerfile
 
-    # 2. Define um nome fixo
     container_name: carteira_digital_app
 
-    # 3. Mapeamento de Portas: expõe a porta 3000 do contêiner para a 8080 da sua máquina local.
+    # Mapeamento de Portas: host:container
     ports:
       - "8080:3000" 
 
-    # 4. Variáveis de Ambiente
     environment:
-      # O HOSTNAME DEVE SER O NOME DO SERVIÇO: 'postgres_db'
-      # Isso garante que sua aplicação consiga se conectar ao banco de dados.
-      # AJUSTE: Você pode precisar de variáveis adicionais como POSTGRES_USER e POSTGRES_PASSWORD
+      # A URL de conexão usa o nome do serviço (postgres_db) como host
       DATABASE_URL: postgres://root:root@postgres_db:5432/Carteira-Digital-db
-      # Você pode adicionar mais variáveis do seu arquivo .env aqui, por exemplo:
-      # JWT_SECRET: ${JWT_SECRET} 
+      # Você deve adicionar outras variáveis de ambiente necessárias aqui (e.g., JWT_SECRET)
       
-    # 5. Dependências: Garante que o DB inicie antes da aplicação.
-    # O 'service_healthy' é bom se você configurar o HEALTHCHECK no DB,
-    # mas 'service_started' geralmente é suficiente para o NestJS.
+    # Depende do DB e só inicia quando o HEALTHCHECK do DB for bem-sucedido
     depends_on:
       postgres_db:
         condition: service_healthy 
 
-    # 6. Reinício:
     restart: unless-stopped
 
+    # Executa as migrations do Prisma antes de iniciar a aplicação em modo de produção
     command: sh -c "npx prisma migrate deploy && npm run start:prod"
 
-# Define os volumes que o Docker deve gerenciar (para persistência de dados).
+# Volume para persistência dos dados do PostgreSQL
 volumes:
   postgres_data:
