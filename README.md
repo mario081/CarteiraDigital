@@ -1,98 +1,97 @@
+# 💳 Carteira Digital Simplificada - API RESTful
+
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+<a href="https://nestjs.com/" target="blank">
+<img src="https://nestjs.com/img/logo_text.svg" width="150" alt="Nest Logo" />
+</a>
+<img height="50" width="60" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/prisma/prisma-original.svg">
+</a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## 📄 Descrição do Projeto
+Esta é uma API RESTful desenvolvida com NestJS que simula uma Carteira Digital Simplificada. O projeto foi construído com foco em modularidade, segurança e manutenção futura, dividindo claramente as responsabilidades entre: User (Usuários), Account (Conta/Saldo) e History (Histórico de Transações).
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🎯 Principais Funcionalidades
+Módulo	Funcionalidade	Detalhes Técnicos
+User	Criação e Autenticação de Usuários	Senhas armazenadas com hashing Argon2 para segurança.
+Account	Gestão de Saldo	Criação automática de conta/saldo junto com o usuário.
+Transaction	Transferências Seguras	Uso de Transações de Banco de Dados (Prisma $transaction) para garantir que o débito e o crédito ocorram de forma atômica.
+History	Rastreabilidade de Operações	Registro detalhado de aberturas de conta e transferências.
+Segurança	Autorização de Acesso	Implementação de JSON Web Tokens (JWT) com Passport para proteger rotas privadas.
 
-## Description
+Exportar para as Planilhas
+A aplicação suporta uma funcionalidade de "Link Compartilhado" que adiciona um saldo inicial (R$100,00) na criação da conta.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🛠️ Tecnologias Utilizadas
+Este projeto foi desenvolvido utilizando a seguinte stack:
 
-## Project setup
+Backend Framework: NestJS (Node.js)
 
-```bash
-$ npm install
+Banco de Dados: PostgreSQL
+
+ORM: Prisma
+
+Containerização: Docker e Docker Compose
+
+Segurança: Argon2 (Hashing de Senhas) e JWT (Autenticação)
+
+## ⚙️ Como Executar o Projeto (Via Docker Compose)
+A forma recomendada para executar este projeto é utilizando o Docker Compose, garantindo que a aplicação e o banco de dados iniciem corretamente em um ambiente isolado.
+
+## 📋 Pré-requisitos
+Você deve ter instalado na sua máquina:
+
+Node.js (v20+)
+
+Docker
+
+Docker Compose
+
+1. Configuração do Ambiente
+Clone o repositório:
+
+```Bash
+git clone [(https://github.com/mario081/CarteiraDigital.git)]
+cd carteira-digital-simplificada
+````
+Variáveis de Ambiente:
+
+Crie um arquivo chamado .env na raiz do projeto.
+
+Preencha-o com base nas variáveis esperadas pela aplicação, incluindo a URL de conexão com o PostgreSQL e a JWT_SECRET.
+
+Exemplo de arquivo .env:
+
 ```
+# Variáveis do Banco de Dados (configuradas no docker-compose)
+DATABASE_URL="postgresql://root:root@postgres_db:5432/Carteira-Digital-db?schema=public"
 
-## Compile and run the project
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+# Variável de Segurança JWT
+JWT_SECRET="SUA_CHAVE_SECRETA_MUITO_FORTE" 
+# Use uma chave aleatória e forte.
 ```
+2. Inicialização com Docker
+Execute o comando abaixo para construir a imagem do NestJS e iniciar os serviços (app e postgres_db):
 
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+```Bash
+docker-compose up --build -d
 ```
+O --build garante que a imagem seja construída (usando seu Dockerfile) e o -d que rode em detached mode (em segundo plano).
 
-## Deployment
+3. Executando as Migrations (Automático)
+No docker-compose.yml, o comando command: sh -c "npx prisma migrate deploy && npm run start:prod" garante que as migrations do Prisma sejam aplicadas ao banco de dados antes da aplicação NestJS iniciar, garantindo que o esquema esteja pronto.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+4. Acesso à API
+A aplicação estará disponível em: http:( //localhost:8080 )
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## 🗺️ Endpoints da API
+Acesse as rotas abaixo (utilizando ferramentas como Insomnia ou Postman) para testar a aplicação.
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+Rota	Método	Descrição	Requer JWT
+users	POST	Cria um novo usuário e sua conta.	Não
+auth/login	POST	Autentica o usuário e retorna o access_token.	Não
+transactions/transfer	POST	Realiza uma transferência entre contas.	Sim
+history	GET	Retorna o histórico de transações do usuário logado.	Sim
+feature/privat	GET	Rota de teste para acesso privado (requer JWT).	Sim
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Não se esqueça de incluir o access_token no cabeçalho Authorization (tipo Bearer) para acessar as rotas protegidas.
