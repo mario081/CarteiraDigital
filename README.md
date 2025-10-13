@@ -95,3 +95,32 @@ history	GET	Retorna o histórico de transações do usuário logado.	Sim
 feature/privat	GET	Rota de teste para acesso privado (requer JWT).	Sim
 
 Não se esqueça de incluir o access_token no cabeçalho Authorization (tipo Bearer) para acessar as rotas protegidas.
+# Cadastro do User
+
+```Bash
+Post(http://localhost:8080/users/cadastra)
+
+{
+  "name": "User Remetente",
+  "email": "remetente@exemplo.com",
+  "password": "senha123"
+}
+```
+# Login do User e Libera Token
+
+```Bash
+http://localhost:8080/users/login
+
+"acessarToken" com o token para entrar na aplicação
+{
+  "email": "remetente@exemplo.com",
+  "password": "senha123"
+}
+```
+# Histório de transações do User
+
+```Bash
+http://localhost:8080/history
+
+com o "acessarToken"
+```
