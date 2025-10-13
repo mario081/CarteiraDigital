@@ -111,11 +111,12 @@ Post(http://localhost:8080/users/cadastra)
 ```Bash
 http://localhost:8080/users/login
 
-"acessarToken" com o token para entrar na aplicação
 {
   "email": "remetente@exemplo.com",
   "password": "senha123"
 }
+
+"acessarToken" com o token para entrar na aplicação
 ```
 # Histório de transações do User
 
