@@ -50,6 +50,10 @@ COPY --from=build /app/dist ./dist
 # 3. Copia arquivos essenciais de configuração para a execução
 COPY package.json ./
 
+COPY --from=build /app/prisma ./prisma
+
+ENV NODE_ENV=production
+
 # Comando que será executado quando o contêiner iniciar
 # De acordo com seu package.json: "start:prod": "node dist/main"
 CMD [ "npm", "run", "start:prod" ]
