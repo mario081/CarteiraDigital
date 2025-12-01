@@ -11,10 +11,7 @@ import { Prisma } from '@prisma/client';
 export class UserService {
 
     constructor(
-        private prisma: PrismaService, 
-        private readonly jwtService: JwtService, 
-        private accountService: AccountService
-    ) { }
+        private prisma: PrismaService, private readonly jwtService: JwtService, private accountService: AccountService) { }
 
     async createUser(dto: createUserDto) {
 
