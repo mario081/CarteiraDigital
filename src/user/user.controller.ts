@@ -8,8 +8,8 @@ export class UserController {
 
     constructor(private userService: UserService){}
 
-    @Post('cadastra')
-    criarUser(@Body() dto: createUserDto){
+    @Post('register')
+    createUser(@Body() dto: createUserDto){
         return this.userService.createUser(dto);
     }     
 
@@ -19,7 +19,7 @@ export class UserController {
     }
 
     @Post('login')
-    logar(@Body() dto: loginUserDto){
-        return this.userService.logar(dto);
+    login(@Body() dto: loginUserDto){
+        return this.userService.login(dto);
     }
 }

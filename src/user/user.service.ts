@@ -4,11 +4,17 @@ import { createUserDto } from './dto/create.user.dto';
 import * as argon2 from 'argon2';
 import { loginUserDto } from './dto/login.user.dto';
 import { JwtService } from '@nestjs/jwt';
-import { accountService } from 'src/account/account.service';
+import { AccountService } from 'src/account/account.service';
+import { activateLink, initialvalue, msgHistory } from 'src/account/account.link.balance';
+import { Prisma } from '@prisma/client';
 @Injectable()
 export class UserService {
 
-    constructor(private prisma: PrismaService, private readonly jwtService: JwtService, private contaService: accountService) { }
+    constructor(
+        private prisma: PrismaService, 
+        private readonly jwtService: JwtService, 
+        private accountService: AccountService
+    ) { }
 
     async createUser(dto: createUserDto) {
 
@@ -24,9 +30,29 @@ export class UserService {
                 }
             })
 
-            await this.contaService.createConta(tx, { userId: createUser.id })
+            const account = await this.accountService.createAccount(tx, { userId: createUser.id })
 
-            return { message: "Usuário e Conta criada com sucesso!!" }
+            if (activateLink) {
+                await tx.history.create({
+                    data: {
+                        accountId: account.id,
+                        type: 'OPEN_WITH_SHARED_LINK',
+                        value: initialvalue,
+                        description: msgHistory
+                    }
+                })
+            } else {
+                await tx.history.create({
+                    data: {
+                        accountId: account.id,
+                        type: 'ACCOUNT_OPENING',
+                        value: 0,
+                        description: 'Account created successfully'
+                    }
+                })
+            }
+
+            return { message: "User and account created successfully" }
         })
     }
 
@@ -34,7 +60,7 @@ export class UserService {
         return this.prisma.users.findMany({});
     }
 
-    async logar(dto: loginUserDto) {
+    async login(dto: loginUserDto) {
         const login = await this.prisma.users.findUnique({
             where: {
                 name: dto.name,
@@ -43,14 +69,14 @@ export class UserService {
         })
 
         if (!login) {
-            throw new ForbiddenException("Usuario não encontrado")
+            throw new ForbiddenException("User not found")
         }
         const isMatch = await argon2.verify(login.password, dto.password)
         if (!isMatch) {
-            throw new ForbiddenException("email ou senha incorreto")
+            throw new ForbiddenException("Email or password incorrect")
         }
 
         const payload = { sub: login.id, email: login.email, name: login.name }
-        return { acessarToken: this.jwtService.sign(payload) };
+        return { accessToken: this.jwtService.sign(payload) };
     }
 }

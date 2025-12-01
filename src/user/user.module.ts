@@ -6,13 +6,13 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from 'src/jwt/jwt.strategy';
-import { accountModule } from 'src/account/account.module';
+import { AccountModule } from 'src/account/account.module';
 
 @Module({
   controllers: [UserController],
   providers: [UserService, JwtStrategy],
   exports: [JwtStrategy],
-  imports: [accountModule,PassportModule,PrismaModule, JwtModule.registerAsync({
+  imports: [AccountModule, PassportModule, PrismaModule, JwtModule.registerAsync({
     inject: [ConfigService],
     useFactory: ( config: ConfigService) => ({
       secret: config.getOrThrow('JWT_SECRET'),
