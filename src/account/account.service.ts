@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { createAccountDto } from './dto/create.account.dto';
-import { PrismaClient } from '@prisma/client/extension';
-import { activateLink, initialvalue, msgHistory } from './account.link.balance';
+import { Prisma } from '@prisma/client';
+import { activateLink, initialvalue } from './account.link.balance';
 
 
 @Injectable()
-export class accountService {
+export class AccountService {
 
-    async createConta(tx: Omit<PrismaClient, symbol> ,dto: createAccountDto) {
+    async createAccount(tx: Prisma.TransactionClient, dto: createAccountDto) {
 
         if (activateLink) {
             const newAccount = await tx.account.create({
@@ -16,29 +16,12 @@ export class accountService {
                     balance: initialvalue
                 }
             })
-
-            await tx.History.create({
-                data: {
-                    accountId: newAccount.id,
-                    type: 'Abrir com Link Compartilhado',
-                    value: initialvalue,
-                    description: msgHistory
-                }
-            })
             return newAccount;
         } else {
             const account = await tx.account.create({
                 data: {
                     userId: dto.userId,
 
-                }
-            })
-            await tx.History.create({
-                data: {
-                    accountId: account.id,
-                    type: 'Abertura da conta',
-                    value: 0,
-                    description: 'Conta criada com sucesso!!'
                 }
             })
             return account

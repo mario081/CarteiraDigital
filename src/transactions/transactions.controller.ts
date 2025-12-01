@@ -16,7 +16,7 @@ export class TransactionsController {
         const transactionHistory = await this.transactionsService.transfer(user.userId, transferDto)
 
         return {
-            message: 'Transferência realizada com sucesso!',
+            message: 'Transfer completed successfully',
             history: transactionHistory
         }
     }

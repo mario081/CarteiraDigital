@@ -15,16 +15,16 @@ export class TransactionsService {
 
         return this.prisma.$transaction( async (tx) => {
 
-            const senderUserAccoount = await tx.users.findUnique({
+            const senderUserAccount = await tx.users.findUnique({
                 where: { id: senderUserId },
                 include: { account: true }
             })
 
-            if(!senderUserAccoount || !senderUserAccoount.account){
-                throw new NotFoundException('Conta remetente não encontrada ou inexistente.')
+            if(!senderUserAccount || !senderUserAccount.account){
+                throw new NotFoundException('Sender account not found or does not exist.')
             }
 
-            const senderAccoount = senderUserAccoount.account
+            const senderAccount = senderUserAccount.account
 
             const recipientUserAccount = await tx.users.findUnique({
                 where: { email: recipientEmail },
@@ -32,21 +32,21 @@ export class TransactionsService {
             })
             
             if(!recipientUserAccount || !recipientUserAccount.account){
-                throw new NotFoundException('Usuário destinatário ou conta não encontrado(a) com este email.')
+                throw new NotFoundException('Recipient user or account not found with this email.')
             }
 
             const recipientAccount = recipientUserAccount.account
 
-            if(senderAccoount.id === recipientAccount.id){
-                throw new BadRequestException('Você não pode transferir para sua própria conta')
+            if(senderAccount.id === recipientAccount.id){
+                throw new BadRequestException('You cannot transfer to your own account')
             }
 
-            if(senderAccoount.balance.toNumber() < transferAmount) {
-                throw new BadRequestException('Saldo insuficiente para a transferência.')
+            if(senderAccount.balance.toNumber() < transferAmount) {
+                throw new BadRequestException('Insufficient balance for transfer.')
             }
 
             await tx.account.update({
-                where: { id: senderAccoount.id },
+                where: { id: senderAccount.id },
                 data: {
                     balance: {
                         decrement: transferAmount
@@ -64,10 +64,10 @@ export class TransactionsService {
             })
 
             await this.historyService.createRecord(tx,
-                senderAccoount.id,
+                senderAccount.id,
                 'TRANSFER_SENT',
                 new Prisma.Decimal(transferAmount * -1),
-                `Transferência enviada para: ${recipientUserAccount.email}`,
+                `Transfer sent to: ${recipientUserAccount.email}`,
                 new Date()
             )
 
@@ -75,7 +75,7 @@ export class TransactionsService {
                 recipientAccount.id,
                 'TRANSFER_RECEIVED',
                 new Prisma.Decimal(transferAmount),
-                `Transferência recebida de: ${senderUserAccoount.email}`,
+                `Transfer received from: ${senderUserAccount.email}`,
                 new Date()
             )
 

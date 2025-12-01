@@ -33,7 +33,7 @@ export class HistoryService {
         })
 
         if(!account){
-            throw new NotFoundException('Conta de saldo não encontrada.');
+            throw new NotFoundException('Account not found.');
         }
 
         return this.prisma.history.findMany({
