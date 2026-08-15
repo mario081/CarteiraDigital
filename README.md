@@ -123,5 +123,7 @@ http://localhost:8080/users/login
 ```Bash
 http://localhost:8080/history
 
+
+
 com o "acessarToken"
 ```
