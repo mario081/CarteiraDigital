@@ -106,6 +106,8 @@ Post(http://localhost:8080/users/cadastra)
   "password": "senha123"
 }
 ```
+
+
 # Login do User e Libera Token
 
 ```Bash
